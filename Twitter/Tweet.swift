@@ -16,6 +16,17 @@ class Tweet: NSObject {
         return dictionary["text"] as? String
     }
     
+    var createdDate: String?{
+        let createdDate = dictionary["created_at"] as? String
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEE MMM d HH:mm:ss Z y"
+        let date = formatter.date(from: createdDate!)
+        formatter.dateFormat = "MM/dd/yy, HH:mm a"
+        formatter.amSymbol = "AM"
+        formatter.pmSymbol = "PM"
+        return formatter.string(from:date!)
+    }
+    
     var timestamp: String?{
         
         let timestampString = dictionary["created_at"] as? String
@@ -48,15 +59,32 @@ class Tweet: NSObject {
     }
     
     var favoritesCount: Int{
-        return dictionary["favorites_count"] as! Int
+        return dictionary["favorite_count"] as! Int
     }
     
     var user: User{
         return User(dictionary: dictionary["user"] as! NSDictionary)
     }
     
+    var isRetweeted: Bool{
+        return dictionary["retweeted"] as! Bool
+    }
+    
+    var retweetedStatus: NSDictionary?{
+        //print("retweet status in tweet class:", dictionary["retweeted_status"])
+        //guard let retweetedStatus =
+        return dictionary["retweeted_status"] as? NSDictionary
+        //else{
+        //    return nil
+        //}
+        //return Tweet.tweetsWithArray(dictionaries: retweetedStatus)
+    }
+    
+    
+    
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
+        //print(dictionary)
     }
     
     

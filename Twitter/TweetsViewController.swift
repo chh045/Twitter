@@ -11,7 +11,7 @@ import UIKit
 class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
     @IBOutlet weak var tweetTableView: UITableView!
-
+    
     var tweets: [Tweet]!
     
     override func viewDidLoad() {
@@ -21,8 +21,21 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         tweetTableView.delegate = self
         tweetTableView.rowHeight = UITableViewAutomaticDimension
         tweetTableView.estimatedRowHeight = 140
-
+        //tweetTableView.allowsSelection = false
+        
         // Do any additional setup after loading the view.
+        self.navigationController?.navigationBar.barTintColor = .white
+        let twitterLogo = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        twitterLogo.contentMode = .scaleAspectFit
+        twitterLogo.image = UIImage(named: "TwitterLogoBlue")
+        //twitterLogo.backgroundColor = .blue
+        self.navigationItem.titleView = twitterLogo
+        //self.navigationItem.titleView?.backgroundColor = .white
+        //composeButton.image = UIImage(named: "message-add")
+        
+        
+        
+        
         TwitterClient.sharedInstance?.homeTimeline(success: { (tweets) in
             self.tweets = tweets
 
@@ -48,11 +61,12 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as! TweetsTableViewCell
+        let cell = tweetTableView.dequeueReusableCell(withIdentifier: "TweetCell", for: indexPath) as! TweetsTableViewCell
         
         let tweet = tweets![indexPath.row]
         cell.tweet = tweet
-        
+        cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.delegate = self
         return cell
     }
 
@@ -66,13 +80,32 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         // Pass the selected object to the new view controller.
         if let iden = segue.identifier{
             if iden == "ShowTweetDetail"{
-                guard let tweetDetailVC = segue.destination as? TweetDetailViewController else { return }
-                guard let selectedIndexPath = sender as? IndexPath else {return}
-                guard let selectedTweet = tweets?[selectedIndexPath.row] else {return}
+                let tweetDetailVC = segue.destination as! TweetDetailViewController
+                let cell = sender as! TweetsTableViewCell
+                let selectedIndexPath = tweetTableView.indexPath(for: cell)
+                let selectedTweet = tweets![selectedIndexPath!.row]
                 
+                //tweetDetailVC.detailView
+                tweetDetailVC.tweet = selectedTweet
+                
+                let backItem = UIBarButtonItem()
+                backItem.title = "Home"
+                navigationItem.backBarButtonItem = backItem
+                //tweetTableView.deselectRow(at: selectedIndexPath!, animated: true)
             }
         }
     }
-    
+}
 
+
+extension TweetsViewController: TweetsTableViewCellDelegate{
+    func profileImageViewTapped(cell: TweetsTableViewCell, user: User) {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let profileVC = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileTableViewController{
+            //set the profile user before your push
+            //print(user.name)
+            profileVC.user = user
+            self.navigationController?.pushViewController(profileVC, animated: true)
+        }
+    }
 }

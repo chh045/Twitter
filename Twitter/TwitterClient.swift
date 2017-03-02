@@ -20,6 +20,7 @@ class TwitterClient: BDBOAuth1SessionManager {
     // because login is the first step we have to do before fetching data
     // we want to store it some where as a instance variable to check on the instance
     var loginSuccess: (() -> ())?
+    
     var loginFailure: ((Error) -> ())?
     
     func login(success: @escaping () -> (), failure: @escaping (Error) -> ()){
@@ -75,8 +76,26 @@ class TwitterClient: BDBOAuth1SessionManager {
         }, failure: { (task: URLSessionDataTask?, error: Error) -> Void in
             failure(error)
         })
-
     }
+    
+    
+    func userTimeline(screenName: String?, success: @escaping ([Tweet]) -> ()){
+        guard let screenName = screenName else {
+            print("try to pass in an empty screen name\n")
+            return
+        }
+        let param : NSDictionary!
+        param = ["screen_name":screenName]
+        get("1.1/statuses/user_timeline.json", parameters: param, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            let dictonary = response as! [NSDictionary]
+            let tweets = Tweet.tweetsWithArray(dictionaries: dictonary)
+            success(tweets)
+            
+        }) { (task: URLSessionDataTask?, error: Error) in
+            print(error.localizedDescription)
+        }
+    }
+    
     func currentAccount(success: @escaping (User) -> (), failure: @escaping (Error) -> ()){
         get("1.1/account/verify_credentials.json", parameters: nil, progress: nil, success: { (task: URLSessionDataTask, response: Any?) -> Void in
             
@@ -87,5 +106,17 @@ class TwitterClient: BDBOAuth1SessionManager {
         }, failure: { (task: URLSessionDataTask?, error: Error)-> Void in
             failure(error)
         })
+    }
+    
+    func postTweet(status: String, success: @escaping ()->()){
+        guard let encodedStatus = status.addingPercentEncoding(withAllowedCharacters: .urlHostAllowed) else {
+            print("User Input status format issue found")
+            return
+        }
+        post("1.1/statuses/update.json?status=\(encodedStatus)", parameters: nil, progress: nil, success: { (task: URLSessionTask, response: Any?) in
+            success()
+        }) { (task: URLSessionDataTask?, error: Error) in
+            print(error.localizedDescription)
+        }
     }
 }

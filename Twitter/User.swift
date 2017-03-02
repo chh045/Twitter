@@ -24,13 +24,12 @@ class User: NSObject {
     }
     var dictionary: NSDictionary!
     
+    
+    
     // so called deserialization
     init(dictionary: NSDictionary){
         self.dictionary = dictionary
     }
-    
-    
-    // this is a computed property
     
     
     //Twitter[43213:3765185] [User Defaults] Attempt to set a non-property-list object <Twitter.User: 0x6000000f5280> as an NSUserDefaults/CFPreferences value for key currentUser
