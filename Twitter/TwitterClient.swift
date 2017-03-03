@@ -119,4 +119,15 @@ class TwitterClient: BDBOAuth1SessionManager {
             print(error.localizedDescription)
         }
     }
+    
+    func favoriteTweet(id: Int, success: @escaping ()->()){
+        let param = ["id": id]
+        post("1.1/favorites/create.json", parameters: param, progress: nil, success: { (task: URLSessionDataTask, response: Any?) in
+            success()
+        }) { (task: URLSessionDataTask?, error: Error) in
+            print(error.localizedDescription)
+        }
+    }
+    
+    
 }

@@ -70,6 +70,10 @@ class Tweet: NSObject {
         return dictionary["retweeted"] as! Bool
     }
     
+    var isFavorited: Bool{
+        return dictionary["favorited"] as! Bool
+    }
+    
     var retweetedStatus: NSDictionary?{
         //print("retweet status in tweet class:", dictionary["retweeted_status"])
         //guard let retweetedStatus =

@@ -45,7 +45,7 @@ class TweetsTableViewCell: UITableViewCell {
         didSet{
             self.user = retweet?.user
             if let tweetText = retweet?.text {
-                tweetTextLabel.text = tweetText
+                tweetTextLabel.setTweet(tweet: tweetText)
             }
             if let thumbImageUrl = retweet?.user.profileUrl {
                 thumbImageView.setImageWith(thumbImageUrl)
@@ -87,14 +87,14 @@ class TweetsTableViewCell: UITableViewCell {
             if let tweet = tweet {
                 if let retweetStatus = tweet.retweetedStatus{
                     self.retweet = Tweet(dictionary: retweetStatus)
-                    retweetMentionStackView.frame.size.height = 15
+                    //retweetMentionStackView.frame.size.height = 15
                     //retweetMentionStackView.isHidden = false
                     //thumbImageView.frame.origin.y = 21
                     return
                 }
             }
             if let tweetText = tweet?.text {
-                tweetTextLabel.text = tweetText
+                tweetTextLabel.setTweet(tweet: tweetText)
             }
             if let thumbImageUrl = tweet?.user.profileUrl {
                 thumbImageView.setImageWith(thumbImageUrl)
@@ -129,7 +129,6 @@ class TweetsTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-    
     
     func userProfileTapped(_ gesture: UITapGestureRecognizer){
         if let delegate = delegate{

@@ -26,7 +26,7 @@ class TweetsViewCustomCell: UITableViewCell {
     var retweet: Tweet? {
         didSet{
             if let tweetText = retweet?.text {
-                tweetTextLabel.text = tweetText
+                tweetTextLabel.setTweet(tweet: tweetText)
             }
             if let thumbImageUrl = retweet?.user.profileUrl {
                 thumbImageView.setImageWith(thumbImageUrl)
@@ -74,7 +74,7 @@ class TweetsViewCustomCell: UITableViewCell {
                 }
             }
             if let tweetText = tweet?.text {
-                tweetTextLabel.text = tweetText
+                tweetTextLabel.setTweet(tweet: tweetText)
             }
             if let thumbImageUrl = tweet?.user.profileUrl {
                 thumbImageView.setImageWith(thumbImageUrl)

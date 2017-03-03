@@ -22,18 +22,19 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         tweetTableView.rowHeight = UITableViewAutomaticDimension
         tweetTableView.estimatedRowHeight = 140
         //tweetTableView.allowsSelection = false
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(refreshControlAction(refreshControl:)), for: UIControlEvents.valueChanged)
+        tweetTableView.insertSubview(refreshControl, at: 0)
         
         // Do any additional setup after loading the view.
         self.navigationController?.navigationBar.barTintColor = .white
-        let twitterLogo = UIImageView(frame: CGRect(x: 0, y: 0, width: 40, height: 40))
+        let twitterLogo = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         twitterLogo.contentMode = .scaleAspectFit
         twitterLogo.image = UIImage(named: "TwitterLogoBlue")
         //twitterLogo.backgroundColor = .blue
         self.navigationItem.titleView = twitterLogo
         //self.navigationItem.titleView?.backgroundColor = .white
         //composeButton.image = UIImage(named: "message-add")
-        
-        
         
         
         TwitterClient.sharedInstance?.homeTimeline(success: { (tweets) in
@@ -43,8 +44,6 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         }, failure: { (error) in
             print("Error: \(error.localizedDescription)")
         })
-        
-        
     }
 
     override func didReceiveMemoryWarning() {
@@ -72,6 +71,22 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
 
     @IBAction func onLogoutButton(_ sender: Any) {
         TwitterClient.sharedInstance?.logout()
+    }
+    
+    func refreshControlAction(refreshControl: UIRefreshControl){
+        
+        refreshControl.beginRefreshing()
+        TwitterClient.sharedInstance?.homeTimeline(success: { (tweets) in
+            refreshControl.endRefreshing()
+            self.tweets = tweets
+            self.tweetTableView.reloadData()
+            
+        }, failure: { (error) in
+            refreshControl.endRefreshing()
+            print("Error: \(error.localizedDescription)")
+        })
+        
+
     }
     
     

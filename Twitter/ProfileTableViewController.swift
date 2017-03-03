@@ -81,7 +81,7 @@ class ProfileTableViewController: UIViewController, UITableViewDataSource, UITab
             userScreenNameLabel.text = "@"+screenName
         }
         if let tagline = user?.tagline{
-            userDescription.text = tagline
+            userDescription.setTweet(tweet: tagline)
             userDescription.sizeToFit()
         }
     }

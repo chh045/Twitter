@@ -43,7 +43,7 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
 
         if let tweetText = self.tweet?.text {
             print(tweetText)
-            textLabel.text = tweetText
+            textLabel.setTweet(tweet: tweetText)
             textLabel.sizeToFit()
         }
         if let thumbImageUrl = self.tweet?.user.profileUrl {
