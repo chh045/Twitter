@@ -19,15 +19,10 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
     @IBOutlet weak var textLabel: UILabel!
     @IBOutlet weak var userNameLabel: UILabel!
     @IBOutlet weak var thumbImageView: UIImageView!
-    
     @IBOutlet weak var replyButton: UIButton!
-    
     @IBOutlet weak var retweetButton: UIButton!
-    
     @IBOutlet weak var favoriteButton: UIButton!
-    
     @IBOutlet weak var messageButton: UIButton!
-    
     
     
     var tweet: Tweet?
@@ -42,7 +37,6 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.estimatedRowHeight = 140
 
         if let tweetText = self.tweet?.text {
-            print(tweetText)
             textLabel.setTweet(tweet: tweetText)
             textLabel.sizeToFit()
         }

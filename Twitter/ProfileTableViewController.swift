@@ -34,9 +34,6 @@ class ProfileTableViewController: UIViewController, UITableViewDataSource, UITab
         
         TwitterClient.sharedInstance?.userTimeline(screenName: user?.screenname, success: { (tweets:[Tweet]) in
             self.tweets = tweets
-            for tweet in tweets{
-                print(tweet)
-            }
             self.tableView.reloadData()
         })
         

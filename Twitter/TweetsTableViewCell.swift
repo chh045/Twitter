@@ -30,16 +30,41 @@ class TweetsTableViewCell: UITableViewCell {
     @IBOutlet weak var tweetScreenNameLabel: UILabel!
     @IBOutlet weak var tweetTimestampLabel: UILabel!
     @IBOutlet weak var tweetTextLabel: UILabel!
-    @IBOutlet weak var replyIconImage: UIImageView!
-    @IBOutlet weak var retweetIconImage: UIImageView!
     @IBOutlet weak var retweetCountLabel: UILabel!
-    @IBOutlet weak var favoriteIconImage: UIImageView!
     @IBOutlet weak var favoriteCountLabel: UILabel!
     @IBOutlet weak var retweetTimestampLabel: UILabel!
+    
+    @IBOutlet weak var replyButton: UIButton!
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var favoriteButton: UIButton!
+    @IBOutlet weak var messageButton: UIButton!
+    
     
     weak var delegate: TweetsTableViewCellDelegate? //make sure it's weak to prevent retain cycle
     
     var user: User?
+    var retweetCount: Int?
+    var isRetweeted: Bool? {
+        didSet{
+            if isRetweeted! {
+                retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
+            }
+            else {
+                retweetButton.setImage(UIImage(named: "retweet-icon"), for: UIControlState.normal)
+            }
+        }
+    }
+    var favoriteCount: Int?
+    var isFavorited: Bool? {
+        didSet{
+            if isFavorited! {
+                favoriteButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
+            }
+            else {
+                favoriteButton.setImage(UIImage(named: "favor-icon"), for: UIControlState.normal)
+            }
+        }
+    }
     
     var retweet: Tweet? {
         didSet{
@@ -62,15 +87,23 @@ class TweetsTableViewCell: UITableViewCell {
             }
             if let retweetCount = retweet?.retweetCount {
                 retweetCountLabel.text = "\(retweetCount)"
+                self.retweetCount = retweetCount
             }
             if let favoriteCount = retweet?.favoritesCount {
                 favoriteCountLabel.text = "\(favoriteCount)"
+                self.favoriteCount = favoriteCount
             }
             if let retweetUserName = tweet?.user.name {
                 retweetUserNameLabel.text = retweetUserName+" retweeted"
             }
             if let retweetTimestamp = tweet?.timestamp {
                 retweetTimestampLabel.text = " · "+retweetTimestamp
+            }
+            if let retweeted = retweet?.isRetweeted {
+                isRetweeted = retweeted
+            }
+            if let favorite = retweet?.isFavorited {
+                isFavorited = favorite
             }
             retweetMentionStackView.isHidden = false
             
@@ -111,9 +144,17 @@ class TweetsTableViewCell: UITableViewCell {
             }
             if let retweetCount = tweet?.retweetCount {
                 retweetCountLabel.text = "\(retweetCount)"
+                self.retweetCount = retweetCount
             }
             if let favoriteCount = tweet?.favoritesCount {
                 favoriteCountLabel.text = "\(favoriteCount)"
+                self.favoriteCount = favoriteCount
+            }
+            if let retweeted = tweet?.isRetweeted {
+                isRetweeted = retweeted
+            }
+            if let favorite = tweet?.isFavorited {
+                isFavorited = favorite
             }
             retweetMentionStackView.isHidden = true
         }
@@ -129,6 +170,43 @@ class TweetsTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    @IBAction func onTapRetweetButton(_ sender: UIButton) {
+        guard let tid = tweet?.tweetId else {return}
+        if isRetweeted! {
+            TwitterClient.sharedInstance?.unretweet(id: tid, success: {
+                self.retweetCount! -= 1
+                self.retweetCountLabel.text = "\(self.retweetCount!)"
+                self.isRetweeted = false
+            })
+        }
+        else {
+            TwitterClient.sharedInstance?.retweet(id: tid, success: {
+                self.retweetCount! += 1
+                self.retweetCountLabel.text = "\(self.retweetCount!)"
+                self.isRetweeted = true
+            })
+        }
+    }
+    
+    @IBAction func onTapFavoriteButton(_ sender: UIButton) {
+        guard let tid = tweet?.tweetId else {return}
+        if isFavorited! {
+            TwitterClient.sharedInstance?.unfavorite(id: tid, success: {
+                self.favoriteCount! -= 1
+                self.favoriteCountLabel.text = "\(self.favoriteCount!)"
+                self.isFavorited = false
+            })
+        }
+        else {
+            TwitterClient.sharedInstance?.favorite(id: tid, success: {
+                self.favoriteCount! += 1
+                self.favoriteCountLabel.text = "\(self.favoriteCount!)"
+                self.isFavorited = true
+            })
+        }
+    }
+    
     
     func userProfileTapped(_ gesture: UITapGestureRecognizer){
         if let delegate = delegate{

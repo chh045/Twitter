@@ -8,11 +8,13 @@
 
 import UIKit
 
-class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class TweetsViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, UIScrollViewDelegate {
     
     @IBOutlet weak var tweetTableView: UITableView!
-    
     var tweets: [Tweet]!
+    var loadingMoreView: InfiniteScrollActivityView?
+    var isMoreDataLoading = false
+    var tweetIdList: [UInt64] = []
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,15 +33,23 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
         let twitterLogo = UIImageView(frame: CGRect(x: 0, y: 0, width: 30, height: 30))
         twitterLogo.contentMode = .scaleAspectFit
         twitterLogo.image = UIImage(named: "TwitterLogoBlue")
-        //twitterLogo.backgroundColor = .blue
         self.navigationItem.titleView = twitterLogo
-        //self.navigationItem.titleView?.backgroundColor = .white
-        //composeButton.image = UIImage(named: "message-add")
+
+        let frame = CGRect(x: 0, y: tweetTableView.contentSize.height, width: tweetTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+        loadingMoreView = InfiniteScrollActivityView(frame: frame)
+        loadingMoreView!.isHidden = true
+        tweetTableView.addSubview(loadingMoreView!)
+        
+        var insets = tweetTableView.contentInset
+        insets.bottom += InfiniteScrollActivityView.defaultHeight
+        tweetTableView.contentInset = insets
         
         
         TwitterClient.sharedInstance?.homeTimeline(success: { (tweets) in
             self.tweets = tweets
-
+            for tweet in tweets{
+                self.tweetIdList.append(tweet.tweetId)
+            }
             self.tweetTableView.reloadData()
         }, failure: { (error) in
             print("Error: \(error.localizedDescription)")
@@ -76,17 +86,52 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
     func refreshControlAction(refreshControl: UIRefreshControl){
         
         refreshControl.beginRefreshing()
-        TwitterClient.sharedInstance?.homeTimeline(success: { (tweets) in
+        let since_id = tweetIdList.max()! + 1
+        TwitterClient.sharedInstance?.homeTimeline(since_id: since_id, success: { (tweets) in
             refreshControl.endRefreshing()
-            self.tweets = tweets
+            //self.tweets = tweets
+            self.tweets.insert(contentsOf: tweets, at: 0)
+            for tweet in tweets{
+                self.tweetIdList.append(tweet.tweetId)
+            }
             self.tweetTableView.reloadData()
             
         }, failure: { (error) in
             refreshControl.endRefreshing()
             print("Error: \(error.localizedDescription)")
         })
+    }
+    
+    func loadMoreTweetsIntoTable(){
+        let max_id = tweetIdList.min()! - 1
+        TwitterClient.sharedInstance?.homeTimeline(max_id: max_id, success: { (tweets) in
+            self.loadingMoreView?.stopAnimating()
+            self.tweets.append(contentsOf: tweets)
+            //self.tweetIdList = []
+            for tweet in tweets{
+                self.tweetIdList.append(tweet.tweetId)
+            }
+            self.tweetTableView.reloadData()
+            self.isMoreDataLoading = false
+        }, failure: { (error) in
+            print("Error: \(error.localizedDescription)")
+        })
+    }
+    
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
         
-
+        if( !isMoreDataLoading ) {
+            let scrollViewContentHeight = tweetTableView.contentSize.height
+            let scrollOffsetThreshold = scrollViewContentHeight - tweetTableView.bounds.size.height
+            if(scrollView.contentOffset.y > scrollOffsetThreshold && tweetTableView.isDragging) {
+                isMoreDataLoading = true
+                let frame = CGRect(x: 0, y: tweetTableView.contentSize.height, width: tweetTableView.bounds.size.width, height: InfiniteScrollActivityView.defaultHeight)
+                loadingMoreView?.frame = frame
+                loadingMoreView!.startAnimating()
+                loadMoreTweetsIntoTable()
+            }
+        }
     }
     
     
@@ -107,6 +152,11 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                 backItem.title = "Home"
                 navigationItem.backBarButtonItem = backItem
                 //tweetTableView.deselectRow(at: selectedIndexPath!, animated: true)
+            }
+            else if iden == "ComposeSegue"{
+                let composeVC = segue.destination as! ComposeViewController
+                composeVC.user = User._currentUser
+                
             }
         }
     }

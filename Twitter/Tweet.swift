@@ -75,20 +75,22 @@ class Tweet: NSObject {
     }
     
     var retweetedStatus: NSDictionary?{
-        //print("retweet status in tweet class:", dictionary["retweeted_status"])
-        //guard let retweetedStatus =
         return dictionary["retweeted_status"] as? NSDictionary
-        //else{
-        //    return nil
-        //}
-        //return Tweet.tweetsWithArray(dictionaries: retweetedStatus)
     }
     
+    var tweetId: UInt64{
+        return dictionary["id"] as! UInt64
+    }
     
+    var entities: TweetEntity?{
+        guard let entities = dictionary["entities"] as? NSDictionary else {
+            return nil
+        }
+        return TweetEntity(dictionary: entities)
+    }
     
     init(dictionary: NSDictionary) {
         self.dictionary = dictionary
-        //print(dictionary)
     }
     
     

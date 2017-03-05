@@ -21,7 +21,34 @@ class TweetsViewCustomCell: UITableViewCell {
     @IBOutlet weak var tweetTextLabel: UILabel!
     @IBOutlet weak var retweetCountLabel: UILabel!
     @IBOutlet weak var favoriteCountLabel: UILabel!
+    @IBOutlet weak var replyButton: UIButton!
+    @IBOutlet weak var messageButton: UIButton!
+    @IBOutlet weak var retweetButton: UIButton!
+    @IBOutlet weak var favorButton: UIButton!
     
+    
+    var retweetCount: Int?
+    var isRetweeted: Bool? {
+        didSet{
+            if isRetweeted! {
+                retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
+            }
+            else {
+                retweetButton.setImage(UIImage(named: "retweet-icon"), for: UIControlState.normal)
+            }
+        }
+    }
+    var favoriteCount: Int?
+    var isFavorited: Bool? {
+        didSet{
+            if isFavorited! {
+                favorButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
+            }
+            else {
+                favorButton.setImage(UIImage(named: "favor-icon"), for: UIControlState.normal)
+            }
+        }
+    }
     
     var retweet: Tweet? {
         didSet{
@@ -43,9 +70,11 @@ class TweetsViewCustomCell: UITableViewCell {
             }
             if let retweetCount = retweet?.retweetCount {
                 retweetCountLabel.text = "\(retweetCount)"
+                self.retweetCount = retweetCount
             }
             if let favoriteCount = retweet?.favoritesCount {
                 favoriteCountLabel.text = "\(favoriteCount)"
+                self.favoriteCount = favoriteCount
             }
             if let retweetUserName = tweet?.user.name {
                 retweetedUserNameLabel.text = retweetUserName+" retweeted"
@@ -53,6 +82,12 @@ class TweetsViewCustomCell: UITableViewCell {
 //            if let retweetTimestamp = tweet?.timestamp {
 //                retweetTimestampLabel.text = " · "+retweetTimestamp
 //            }
+            if let isRetweeted = retweet?.isRetweeted {
+                self.isRetweeted = isRetweeted
+            }
+            if let isFavorited = retweet?.isFavorited {
+                self.isFavorited = isFavorited
+            }
             retweetMentionStackView.isHidden = false
             
         }
@@ -91,9 +126,17 @@ class TweetsViewCustomCell: UITableViewCell {
             }
             if let retweetCount = tweet?.retweetCount {
                 retweetCountLabel.text = "\(retweetCount)"
+                self.retweetCount = retweetCount
             }
             if let favoriteCount = tweet?.favoritesCount {
                 favoriteCountLabel.text = "\(favoriteCount)"
+                self.favoriteCount = favoriteCount
+            }
+            if let isRetweeted = tweet?.isRetweeted {
+                self.isRetweeted = isRetweeted
+            }
+            if let isFavorited = tweet?.isFavorited {
+                self.isFavorited = isFavorited
             }
             retweetMentionStackView.isHidden = true
         }
@@ -114,5 +157,43 @@ class TweetsViewCustomCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
+    @IBAction func onTapRetweetButton(_ sender: UIButton) {
+        guard let tid = tweet?.tweetId else {return}
+        if isRetweeted! {
+            TwitterClient.sharedInstance?.unretweet(id: tid, success: {
+                self.retweetCount! -= 1
+                self.retweetCountLabel.text = "\(self.retweetCount!)"
+                self.isRetweeted = false
+            })
+        }
+        else {
+            TwitterClient.sharedInstance?.retweet(id: tid, success: {
+                self.retweetCount! += 1
+                self.retweetCountLabel.text = "\(self.retweetCount!)"
+                self.isRetweeted = true
+            })
+        }
+    }
+    
+    
+    @IBAction func onTapFavorButton(_ sender: UIButton) {
+        guard let tid = tweet?.tweetId else {return}
+        if isFavorited! {
+            TwitterClient.sharedInstance?.unfavorite(id: tid, success: {
+                self.favoriteCount! -= 1
+                self.favoriteCountLabel.text = "\(self.favoriteCount!)"
+                self.isFavorited = false
+            })
+        }
+        else {
+            TwitterClient.sharedInstance?.favorite(id: tid, success: {
+                self.favoriteCount! += 1
+                self.favoriteCountLabel.text = "\(self.favoriteCount!)"
+                self.isFavorited = true
+            })
+        }
+    }
+    
     
 }

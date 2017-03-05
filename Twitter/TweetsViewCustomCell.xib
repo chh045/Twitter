@@ -16,7 +16,7 @@
             <rect key="frame" x="0.0" y="0.0" width="361" height="114"/>
             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
             <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="KGk-i7-Jjw" id="H2p-sc-9uM">
-                <rect key="frame" x="0.0" y="0.0" width="361" height="113.5"/>
+                <rect key="frame" x="0.0" y="0.0" width="361" height="113"/>
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="profile_image_normal" translatesAutoresizingMaskIntoConstraints="NO" id="AN2-ls-J6A">
@@ -38,58 +38,69 @@
                         <color key="textColor" red="0.59188610409999998" green="0.59188610409999998" blue="0.59188610409999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <stackView opaque="NO" contentMode="scaleAspectFit" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="IGZ-Tp-Bkg">
+                    <stackView opaque="NO" contentMode="scaleToFill" distribution="equalCentering" translatesAutoresizingMaskIntoConstraints="NO" id="IGZ-Tp-Bkg">
                         <rect key="frame" x="52" y="82.5" width="271" height="20"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="reply-icon" translatesAutoresizingMaskIntoConstraints="NO" id="8BX-51-BBn">
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ucX-Sr-uLq">
                                 <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="20" id="qXK-jB-KgI"/>
+                                    <constraint firstAttribute="width" constant="20" id="68J-5L-vL5"/>
                                 </constraints>
-                            </imageView>
-                            <stackView opaque="NO" contentMode="scaleAspectFit" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="T1B-8p-jta">
-                                <rect key="frame" x="74" y="0.0" width="40" height="20"/>
+                                <state key="normal" image="reply-icon"/>
+                            </button>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="T1B-8p-jta">
+                                <rect key="frame" x="73" y="0.0" width="41" height="20"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="retweet-icon" translatesAutoresizingMaskIntoConstraints="NO" id="JhA-eE-QlR">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ktQ-8s-g3y">
                                         <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="20" id="GK0-wt-BH7"/>
-                                            <constraint firstAttribute="height" constant="20" id="GhB-ZI-kIS"/>
+                                            <constraint firstAttribute="width" constant="20" id="1Lv-nI-b4P"/>
                                         </constraints>
-                                    </imageView>
+                                        <state key="normal" image="retweet-icon"/>
+                                        <connections>
+                                            <action selector="onTapRetweetButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="V2Q-QL-Qt3"/>
+                                        </connections>
+                                    </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="112" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Md9-Nf-eZ1">
-                                        <rect key="frame" x="20" y="0.0" width="20" height="20"/>
+                                        <rect key="frame" x="25" y="0.0" width="16" height="20"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                         <color key="textColor" red="0.60378783941268921" green="0.65483957529067993" blue="0.6939694881439209" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                             </stackView>
-                            <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="rGD-9K-hJt">
-                                <rect key="frame" x="158.5" y="0.0" width="40" height="20"/>
+                            <stackView opaque="NO" contentMode="scaleToFill" distribution="equalSpacing" spacing="5" translatesAutoresizingMaskIntoConstraints="NO" id="rGD-9K-hJt">
+                                <rect key="frame" x="157" y="0.0" width="41" height="20"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="favor-icon" translatesAutoresizingMaskIntoConstraints="NO" id="UVk-9w-nUR">
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="eUV-wd-B82">
                                         <rect key="frame" x="0.0" y="0.0" width="20" height="20"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="20" id="kqi-AA-kJv"/>
-                                            <constraint firstAttribute="width" constant="20" id="wml-B7-ADV"/>
+                                            <constraint firstAttribute="width" constant="20" id="Mn3-v6-DJg"/>
                                         </constraints>
-                                    </imageView>
+                                        <state key="normal" image="favor-icon"/>
+                                        <connections>
+                                            <action selector="onTapFavorButton:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="cxj-BC-JJA"/>
+                                        </connections>
+                                    </button>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="112" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="MML-fT-nc4">
-                                        <rect key="frame" x="20" y="0.0" width="20" height="20"/>
+                                        <rect key="frame" x="25" y="0.0" width="16" height="20"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="10"/>
                                         <color key="textColor" red="0.60378783940000003" green="0.65483957530000003" blue="0.69396948810000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
                             </stackView>
-                            <imageView userInteractionEnabled="NO" alpha="0.5" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="message-icon" translatesAutoresizingMaskIntoConstraints="NO" id="mJS-BW-9Q6">
-                                <rect key="frame" x="254" y="0.0" width="17" height="20"/>
+                            <button opaque="NO" alpha="0.55000000000000004" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="EJl-2t-ulb">
+                                <rect key="frame" x="251" y="0.0" width="20" height="20"/>
                                 <constraints>
-                                    <constraint firstAttribute="width" constant="17" id="ZAj-gw-ciS"/>
+                                    <constraint firstAttribute="width" constant="20" id="C82-kB-2Wm"/>
                                 </constraints>
-                            </imageView>
+                                <state key="normal" image="message-icon"/>
+                            </button>
                         </subviews>
+                        <constraints>
+                            <constraint firstAttribute="height" constant="20" id="oFh-tT-DXy"/>
+                        </constraints>
                     </stackView>
                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="h6A-dX-Xsb">
                         <rect key="frame" x="25" y="4" width="151" height="17"/>
@@ -143,7 +154,11 @@
             </tableViewCellContentView>
             <connections>
                 <outlet property="dateCreatedLabel" destination="HUT-Kn-qCY" id="ynj-nO-2Ny"/>
+                <outlet property="favorButton" destination="eUV-wd-B82" id="liv-Vv-0Qs"/>
                 <outlet property="favoriteCountLabel" destination="MML-fT-nc4" id="gy6-33-nPj"/>
+                <outlet property="messageButton" destination="EJl-2t-ulb" id="s5C-gg-7ZS"/>
+                <outlet property="replyButton" destination="ucX-Sr-uLq" id="tJK-jg-R5y"/>
+                <outlet property="retweetButton" destination="ktQ-8s-g3y" id="aTc-Ry-BA9"/>
                 <outlet property="retweetCountLabel" destination="Md9-Nf-eZ1" id="Vml-98-Bdk"/>
                 <outlet property="retweetMentionStackView" destination="h6A-dX-Xsb" id="HXg-Mg-r3g"/>
                 <outlet property="retweetedUserNameLabel" destination="DOa-y9-oUw" id="NyA-Ka-GQU"/>
