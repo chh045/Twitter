@@ -63,6 +63,7 @@ class ProfileTableViewController: UIViewController, UITableViewDataSource, UITab
         let tweet = self.tweets[indexPath.row]
         cell.tweet = tweet
         cell.selectionStyle = UITableViewCellSelectionStyle.none
+        cell.retweetMentionStackView.isHidden = true
         return cell
     }
     
@@ -80,6 +81,12 @@ class ProfileTableViewController: UIViewController, UITableViewDataSource, UITab
         if let tagline = user?.tagline{
             userDescription.setTweet(tweet: tagline)
             userDescription.sizeToFit()
+        }
+        if let followersCount = user?.followers_count {
+            followerCountLabel.text = "\(followersCount)"
+        }
+        if let following = user?.following {
+            followingCountLabel.text = "\(following)"
         }
     }
 

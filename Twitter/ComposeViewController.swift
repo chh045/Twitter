@@ -29,11 +29,13 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
     
     
     var user: User?
+    var beginText: String?
     
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        user = User._currentUser
         composeTextView.delegate = self
         composeTextView.becomeFirstResponder()
 
@@ -73,6 +75,11 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
             screennameLabel.text = "@"+screenName
             screennameLabel.sizeToFit()
         }
+        if let beginText = beginText {
+            composeTextView.text = beginText+" "
+            textInitiateLabel.isHidden = true
+            updateLetterCount()
+        }
     }
     
     @IBAction func tapOnTweetButton(_ sender: Any) {
@@ -85,14 +92,17 @@ class ComposeViewController: UIViewController, UITextViewDelegate {
         
     }
     
-    
-    func textViewDidChange(_ textView: UITextView) {
-        let letterCount = composeTextView.text.characters.count
+    func updateLetterCount(){
         textInitiateLabel.isHidden = !composeTextView.text.isEmpty
+        let letterCount = composeTextView.text.characters.count
         letterCountLabel.text = "\(maxLetter - letterCount)"
         if letterCount == maxLetter{
             letterCountLabel.textColor = UIColor.red
         }
+    }
+    
+    func textViewDidChange(_ textView: UITextView) {
+        updateLetterCount()
     }
     
     func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {

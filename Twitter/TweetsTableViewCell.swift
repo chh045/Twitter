@@ -11,6 +11,7 @@ import AFNetworking
 
 protocol TweetsTableViewCellDelegate: class  {
     func profileImageViewTapped(cell: TweetsTableViewCell, user: User)
+    func replyButtonOnTap(screenname: String)
 }
 
 class TweetsTableViewCell: UITableViewCell {
@@ -99,10 +100,10 @@ class TweetsTableViewCell: UITableViewCell {
             if let retweetTimestamp = tweet?.timestamp {
                 retweetTimestampLabel.text = " · "+retweetTimestamp
             }
-            if let retweeted = retweet?.isRetweeted {
+            if let retweeted = tweet?.isRetweeted {
                 isRetweeted = retweeted
             }
-            if let favorite = retweet?.isFavorited {
+            if let favorite = tweet?.isFavorited {
                 isFavorited = favorite
             }
             retweetMentionStackView.isHidden = false
@@ -114,15 +115,9 @@ class TweetsTableViewCell: UITableViewCell {
         didSet{
             self.user = tweet?.user
             retweetMentionStackView.frame.size.height = 0
-            //retweetMentionStackView.removeFromSuperview()
-            //retweetMentionStackView.isHidden = true
-            //thumbImageView.frame.origin.y = 3
             if let tweet = tweet {
                 if let retweetStatus = tweet.retweetedStatus{
                     self.retweet = Tweet(dictionary: retweetStatus)
-                    //retweetMentionStackView.frame.size.height = 15
-                    //retweetMentionStackView.isHidden = false
-                    //thumbImageView.frame.origin.y = 21
                     return
                 }
             }
@@ -207,11 +202,16 @@ class TweetsTableViewCell: UITableViewCell {
         }
     }
     
+    @IBAction func onTapReplyButton(_ sender: UIButton) {
+        if let delegate = delegate{
+            let screenName = tweetScreenNameLabel.text!
+            delegate.replyButtonOnTap(screenname: screenName)
+        }
+    }
+    
     
     func userProfileTapped(_ gesture: UITapGestureRecognizer){
         if let delegate = delegate{
-            var screenName = tweetScreenNameLabel.text!
-            screenName.remove(at: screenName.startIndex)
             delegate.profileImageViewTapped(cell: self, user: user!)
         }
     }

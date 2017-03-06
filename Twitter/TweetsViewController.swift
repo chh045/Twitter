@@ -147,16 +147,9 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 //tweetDetailVC.detailView
                 tweetDetailVC.tweet = selectedTweet
-                
                 let backItem = UIBarButtonItem()
                 backItem.title = "Home"
                 navigationItem.backBarButtonItem = backItem
-                //tweetTableView.deselectRow(at: selectedIndexPath!, animated: true)
-            }
-            else if iden == "ComposeSegue"{
-                let composeVC = segue.destination as! ComposeViewController
-                composeVC.user = User._currentUser
-                
             }
         }
     }
@@ -168,9 +161,16 @@ extension TweetsViewController: TweetsTableViewCellDelegate{
         let storyboard = UIStoryboard(name: "Main", bundle: nil)
         if let profileVC = storyboard.instantiateViewController(withIdentifier: "ProfileViewController") as? ProfileTableViewController{
             //set the profile user before your push
-            //print(user.name)
             profileVC.user = user
             self.navigationController?.pushViewController(profileVC, animated: true)
+        }
+    }
+    
+    func replyButtonOnTap(screenname: String){
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        if let composeVC = storyboard.instantiateViewController(withIdentifier: "ComposeViewController") as? ComposeViewController{
+            composeVC.beginText = screenname
+            self.navigationController?.pushViewController(composeVC, animated: true)
         }
     }
 }

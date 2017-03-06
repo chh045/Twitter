@@ -22,6 +22,15 @@ class User: NSObject {
     var tagline: String?{
         return dictionary["description"] as? String
     }
+    
+    var followers_count: UInt64?{
+        return dictionary["followers_count"] as? UInt64
+    }
+    
+    var following: UInt64?{
+        return dictionary["friends_count"] as? UInt64
+    }
+    
     var dictionary: NSDictionary!
     
     

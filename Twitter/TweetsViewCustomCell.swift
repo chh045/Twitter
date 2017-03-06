@@ -79,9 +79,6 @@ class TweetsViewCustomCell: UITableViewCell {
             if let retweetUserName = tweet?.user.name {
                 retweetedUserNameLabel.text = retweetUserName+" retweeted"
             }
-//            if let retweetTimestamp = tweet?.timestamp {
-//                retweetTimestampLabel.text = " · "+retweetTimestamp
-//            }
             if let isRetweeted = retweet?.isRetweeted {
                 self.isRetweeted = isRetweeted
             }
@@ -96,15 +93,10 @@ class TweetsViewCustomCell: UITableViewCell {
     var tweet: Tweet? {
         didSet{
             retweetMentionStackView.frame.size.height = 0
-            //retweetMentionStackView.removeFromSuperview()
-            //retweetMentionStackView.isHidden = true
-            //thumbImageView.frame.origin.y = 3
             if let tweet = tweet {
                 if let retweetStatus = tweet.retweetedStatus{
                     self.retweet = Tweet(dictionary: retweetStatus)
                     retweetMentionStackView.frame.size.height = 15
-                    //retweetMentionStackView.isHidden = false
-                    //thumbImageView.frame.origin.y = 21
                     return
                 }
             }
