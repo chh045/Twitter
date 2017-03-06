@@ -147,6 +147,10 @@ class TweetsViewController: UIViewController, UITableViewDataSource, UITableView
                 
                 //tweetDetailVC.detailView
                 tweetDetailVC.tweet = selectedTweet
+                tweetDetailVC.isFavorited = cell.isFavorited
+                tweetDetailVC.isRetweeted = cell.isRetweeted
+                tweetDetailVC.favorCount = cell.favoriteCount
+                tweetDetailVC.retweetCount = cell.retweetCount
                 let backItem = UIBarButtonItem()
                 backItem.title = "Home"
                 navigationItem.backBarButtonItem = backItem

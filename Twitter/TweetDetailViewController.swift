@@ -28,27 +28,29 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
     weak var delegate: TweetsTableViewCellDelegate?
     var tweet: Tweet?
     var retweetCount: Int?
-    var isRetweeted: Bool?{
-        didSet{
-            if isRetweeted! {
-                retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
-            }
-            else{
-                retweetButton.setImage(UIImage(named: "retweet-icon"), for: UIControlState.normal)
-            }
-        }
-    }
+    var isRetweeted: Bool?
+//        {
+//        didSet{
+//            if isRetweeted! {
+//                retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
+//            }
+//            else{
+//                retweetButton.setImage(UIImage(named: "retweet-icon"), for: UIControlState.normal)
+//            }
+//        }
+//    }
     var favorCount: Int?
-    var isFavorited: Bool?{
-        didSet{
-            if isFavorited! {
-                favoriteButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
-            }
-            else {
-                favoriteButton.setImage(UIImage(named: "favor-icon"), for: UIControlState.normal)
-            }
-        }
-    }
+    var isFavorited: Bool?
+//        {
+//        didSet{
+//            if isFavorited! {
+//                favoriteButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
+//            }
+//            else {
+//                favoriteButton.setImage(UIImage(named: "favor-icon"), for: UIControlState.normal)
+//            }
+//        }
+//    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -59,10 +61,17 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
         tableView.rowHeight = UITableViewAutomaticDimension
         tableView.estimatedRowHeight = 100
 
+        updateUI()
+
+        let tapOnThumbImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapOnThumbImage(tapGestureRecognizer:)))
+        thumbImageView.isUserInteractionEnabled = true
+        thumbImageView.addGestureRecognizer(tapOnThumbImageRecognizer)
+    }
+    
+    func updateUI(){
         if let tweetText = self.tweet?.text {
             textLabel.setTweet(tweet: tweetText)
             textLabel.sizeToFit()
-            print(textLabel.frame.size.height, headerView.frame.size.height)
             headerView.frame.size.height = 200 + textLabel.frame.size.height
         }
         if let thumbImageUrl = self.tweet?.user.profileUrl {
@@ -80,25 +89,25 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
             timeStampLabel.text = createdDate
             timeStampLabel.sizeToFit()
         }
-        if let retweetCount = tweet?.retweetCount {
-            retweetCountLabel.text = "\(retweetCount)"
-            self.retweetCount = retweetCount
+        updateButton()
+    }
+    
+    func updateButton(){
+        retweetCountLabel.text = "\(retweetCount!)"
+        favoriteCountLabel.text = "\(favorCount!)"
+        if isFavorited! {
+            favoriteButton.setImage(UIImage(named: "favor-icon-red"), for: UIControlState.normal)
         }
-        if let favoriteCount = tweet?.favoritesCount {
-            favoriteCountLabel.text = "\(favoriteCount)"
-            self.favorCount = favoriteCount
-        }
-        if let isRetweeted = tweet?.isRetweeted {
-            self.isRetweeted = isRetweeted
-        }
-        if let isFavorited = tweet?.isFavorited {
-            self.isFavorited = isFavorited
+        else {
+            favoriteButton.setImage(UIImage(named: "favor-icon"), for: UIControlState.normal)
         }
         
-
-        let tapOnThumbImageRecognizer = UITapGestureRecognizer(target: self, action: #selector(tapOnThumbImage(tapGestureRecognizer:)))
-        thumbImageView.isUserInteractionEnabled = true
-        thumbImageView.addGestureRecognizer(tapOnThumbImageRecognizer)
+        if isRetweeted! {
+            retweetButton.setImage(UIImage(named: "retweet-icon-green"), for: UIControlState.normal)
+        }
+        else{
+            retweetButton.setImage(UIImage(named: "retweet-icon"), for: UIControlState.normal)
+        }
     }
 
     override func didReceiveMemoryWarning() {
@@ -121,28 +130,43 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
     }
     
     @IBAction func onTapRetweetButton(_ sender: UIButton) {
+        guard let tid = tweet?.tweetId else {return}
         if isRetweeted! {
-            retweetCount! -= 1
-            retweetCountLabel.text = "\(retweetCount!)"
-            isRetweeted! = false
+            TwitterClient.sharedInstance?.unretweet(id: tid, success: {
+                self.retweetCount! -= 1
+                self.retweetCountLabel.text = "\(self.retweetCount!)"
+                self.isRetweeted! = false
+                self.updateButton()
+            })
         }
         else {
-            retweetCount! += 1
-            retweetCountLabel.text = "\(retweetCount!)"
-            isRetweeted! = true
+            TwitterClient.sharedInstance?.retweet(id: tid, success: {
+                self.retweetCount! += 1
+                self.retweetCountLabel.text = "\(self.retweetCount!)"
+                self.isRetweeted! = true
+                self.updateButton()
+            })
         }
     }
     
     @IBAction func onTapFavorButton(_ sender: UIButton) {
+        guard let tid = tweet?.tweetId else {return}
         if isFavorited! {
-            favorCount! -= 1
-            favoriteCountLabel.text = "\(favorCount!)"
-            isFavorited = false
+            TwitterClient.sharedInstance?.unfavorite(id: tid, success: {
+
+                self.favorCount! -= 1
+                self.favoriteCountLabel.text = "\(self.favorCount!)"
+                self.isFavorited = false
+                self.updateButton()
+            })
         }
         else {
-            favorCount! += 1
-            favoriteCountLabel.text = "\(favorCount!)"
-            isFavorited = true
+            TwitterClient.sharedInstance?.favorite(id: tid, success: {
+                self.favorCount! += 1
+                self.favoriteCountLabel.text = "\(self.favorCount!)"
+                self.isFavorited = true
+                self.updateButton()
+            })
         }
     }
     
@@ -163,7 +187,7 @@ class TweetDetailViewController: UIViewController, UITableViewDataSource, UITabl
             let profileVC = segue.destination as! ProfileTableViewController
             profileVC.user = tweet?.user
         }
+        print(iden)
     }
-    
 
 }

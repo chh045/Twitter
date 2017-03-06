@@ -67,6 +67,7 @@ class TweetsTableViewCell: UITableViewCell {
         }
     }
     
+    // retweet stores originals info, tweet store info from timeline
     var retweet: Tweet? {
         didSet{
             self.user = retweet?.user
@@ -86,11 +87,11 @@ class TweetsTableViewCell: UITableViewCell {
             if let timestamp = retweet?.timestamp {
                 tweetTimestampLabel.text = "· "+timestamp
             }
-            if let retweetCount = retweet?.retweetCount {
+            if let retweetCount = tweet?.retweetCount {
                 retweetCountLabel.text = "\(retweetCount)"
                 self.retweetCount = retweetCount
             }
-            if let favoriteCount = retweet?.favoritesCount {
+            if let favoriteCount = tweet?.favoritesCount {
                 favoriteCountLabel.text = "\(favoriteCount)"
                 self.favoriteCount = favoriteCount
             }

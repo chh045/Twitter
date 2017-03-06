@@ -68,25 +68,24 @@ class TweetsViewCustomCell: UITableViewCell {
             if let timestamp = retweet?.timestamp {
                 dateCreatedLabel.text = "· "+timestamp
             }
-            if let retweetCount = retweet?.retweetCount {
+            if let retweetCount = tweet?.retweetCount {
                 retweetCountLabel.text = "\(retweetCount)"
                 self.retweetCount = retweetCount
             }
-            if let favoriteCount = retweet?.favoritesCount {
+            if let favoriteCount = tweet?.favoritesCount {
                 favoriteCountLabel.text = "\(favoriteCount)"
                 self.favoriteCount = favoriteCount
             }
             if let retweetUserName = tweet?.user.name {
                 retweetedUserNameLabel.text = retweetUserName+" retweeted"
             }
-            if let isRetweeted = retweet?.isRetweeted {
+            if let isRetweeted = tweet?.isRetweeted {
                 self.isRetweeted = isRetweeted
             }
-            if let isFavorited = retweet?.isFavorited {
+            if let isFavorited = tweet?.isFavorited {
                 self.isFavorited = isFavorited
             }
             retweetMentionStackView.isHidden = false
-            
         }
     }
     
